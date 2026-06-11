@@ -1,5 +1,4 @@
 param(
-    [Alias("config")]
     [switch]$Config,
     [switch]$ConfigOnly,
     [switch]$ShowConfig,
