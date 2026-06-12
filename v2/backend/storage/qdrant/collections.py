@@ -1,4 +1,4 @@
-import requests
+import httpx
 
 
 COLLECTIONS = {
@@ -13,11 +13,11 @@ COLLECTIONS = {
 def ensure_qdrant_collections(qdrant_url: str) -> dict:
     base = qdrant_url.rstrip("/")
     results = {}
-    for name, size in COLLECTIONS.items():
-        response = requests.put(
-            f"{base}/collections/{name}",
-            json={"vectors": {"size": size, "distance": "Cosine"}},
-            timeout=20,
-        )
-        results[name] = {"status_code": response.status_code, "ok": response.ok}
+    with httpx.Client(timeout=20) as client:
+        for name, size in COLLECTIONS.items():
+            response = client.put(
+                f"{base}/collections/{name}",
+                json={"vectors": {"size": size, "distance": "Cosine"}},
+            )
+            results[name] = {"status_code": response.status_code, "ok": response.is_success}
     return results

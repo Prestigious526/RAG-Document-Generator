@@ -4,7 +4,7 @@ from datetime import datetime
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
-import requests
+import httpx
 
 from backend import services
 from backend.config.settings import get_settings
@@ -20,6 +20,8 @@ from backend.api.models import (
 from backend.api.task_tracker import TaskTracker
 from workers.celery_app import celery_app
 from workers import tasks as task_module
+
+import requests
 
 router = APIRouter()
 

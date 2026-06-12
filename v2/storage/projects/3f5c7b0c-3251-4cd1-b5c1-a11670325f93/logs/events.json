@@ -1,0 +1,18 @@
+[
+  {
+    "time": "2026-06-12T02:47:55.654574+00:00",
+    "type": "project.created",
+    "message": "Created project test",
+    "metadata": {
+      "project_id": "3f5c7b0c-3251-4cd1-b5c1-a11670325f93"
+    }
+  },
+  {
+    "time": "2026-06-12T02:49:29.160767+00:00",
+    "type": "ingestion.completed",
+    "message": "Ingested qw5146_EN.pdf",
+    "metadata": {
+      "chunks": 25
+    }
+  }
+]

@@ -2,11 +2,9 @@ param(
     [switch]$Config,
     [switch]$ConfigOnly,
     [switch]$ShowConfig,
-    [string]$EnvName,
-    [int]$BackendPort,
-    [int]$FrontendPort,
     [switch]$SkipModelPull,
-    [switch]$NoBrowser
+    [switch]$NoBrowser,
+    [string]$EnvName = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -17,45 +15,77 @@ $ConfigPath = Join-Path $Root "storage\cache\launcher-config.json"
 $EnvFile = Join-Path $Root "environment.yml"
 $DotEnvPath = Join-Path $Root ".env"
 
-if ($PSStyle) {
-    $PSStyle.OutputRendering = "Ansi"
+# Color helper function - uses PowerShell native colors
+function Write-Colored {
+    param([string]$Text, [string]$Color = "White")
+    Write-Host $Text -ForegroundColor $Color
+}
+
+function Write-ColoredInline {
+    param([string]$Text, [string]$Color = "White")
+    Write-Host $Text -ForegroundColor $Color -NoNewline
 }
 
 $C = @{
-    Reset = "`e[0m"
-    Dim = "`e[2m"
-    Bold = "`e[1m"
-    Red = "`e[31m"
-    Green = "`e[32m"
-    Yellow = "`e[33m"
-    Blue = "`e[34m"
-    Cyan = "`e[36m"
-    White = "`e[37m"
-    Gray = "`e[90m"
+    Reset = ""
+    Dim = ""
+    Bold = ""
+    Red = "Red"
+    Green = "Green"
+    Yellow = "Yellow"
+    Blue = "Blue"
+    Cyan = "Cyan"
+    White = "White"
+    Gray = "Gray"
 }
 
 function Write-Rule {
     param([string]$Text = "")
     $line = "-" * 76
-    Write-Host "$($C.Gray)$line$($C.Reset)"
+    Write-Host $line -ForegroundColor Gray
     if ($Text) {
-        Write-Host "$($C.Bold)$($C.Cyan)$Text$($C.Reset)"
+        Write-Host $Text -ForegroundColor Cyan
     }
 }
 
 function Write-Logo {
     Clear-Host
     Write-Host ""
-    Write-Host "$($C.Bold)$($C.Cyan)+--------------------------------------------------------------------------+$($C.Reset)"
-    Write-Host "$($C.Bold)$($C.Cyan)|$($C.Reset) $($C.Bold)$($C.White)Offline RAG Document Generator$($C.Reset) $($C.Dim)$($C.White)- setup, config, launch$($C.Reset)              $($C.Bold)$($C.Cyan)|$($C.Reset)"
-    Write-Host "$($C.Bold)$($C.Cyan)+--------------------------------------------------------------------------+$($C.Reset)"
+    Write-Host "+--------------------------------------------------------------------------+" -ForegroundColor Cyan
+    Write-Host -NoNewline "| " -ForegroundColor Cyan
+    Write-Host -NoNewline "Offline RAG Document Generator" -ForegroundColor White
+    Write-Host -NoNewline " - setup, config, launch" -ForegroundColor DarkGray
+    Write-Host "              |" -ForegroundColor Cyan
+    Write-Host "+--------------------------------------------------------------------------+" -ForegroundColor Cyan
     Write-Host ""
 }
 
-function Step { param([string]$Text) Write-Host "$($C.Blue)>$($C.Reset) $($C.Bold)$Text$($C.Reset)" }
-function Ok { param([string]$Text) Write-Host "  $($C.Green)OK$($C.Reset)  $Text" }
-function Warn { param([string]$Text) Write-Host "  $($C.Yellow)!!$($C.Reset)  $Text" }
-function Fail { param([string]$Text) Write-Host "  $($C.Red)XX$($C.Reset)  $Text" }
+function Step { 
+    param([string]$Text) 
+    Write-Host -NoNewline "> " -ForegroundColor Blue
+    Write-Host $Text -ForegroundColor White
+}
+
+function Ok { 
+    param([string]$Text) 
+    Write-Host -NoNewline "  " -ForegroundColor White
+    Write-Host -NoNewline "OK" -ForegroundColor Green
+    Write-Host "  $Text" -ForegroundColor White
+}
+
+function Warn { 
+    param([string]$Text) 
+    Write-Host -NoNewline "  " -ForegroundColor White
+    Write-Host -NoNewline "!!" -ForegroundColor Yellow
+    Write-Host "  $Text" -ForegroundColor White
+}
+
+function Fail { 
+    param([string]$Text) 
+    Write-Host -NoNewline "  " -ForegroundColor White
+    Write-Host -NoNewline "XX" -ForegroundColor Red
+    Write-Host "  $Text" -ForegroundColor White
+}
 
 function Default-Config {
     return [ordered]@{
@@ -153,7 +183,8 @@ function Read-ConfigValue {
         [string]$Type = "string"
     )
     $suffix = if ($null -ne $Default -and "$Default" -ne "") { " [$Default]" } else { "" }
-    Write-Host -NoNewline "$($C.Cyan)?$($C.Reset) $Label${suffix}: "
+    Write-Host -NoNewline "? " -ForegroundColor Cyan
+    Write-Host -NoNewline "$Label${suffix}: " -ForegroundColor White
     $raw = Read-Host
     if ([string]::IsNullOrWhiteSpace($raw)) {
         return $Default
@@ -173,10 +204,11 @@ function Read-EnvVars {
     }
 
     Write-Host ""
-    Write-Host "$($C.Dim)Add extra environment variables as KEY=value. Press Enter on an empty line when done.$($C.Reset)"
-    Write-Host "$($C.Dim)Examples: HTTP_PROXY=http://127.0.0.1:7890, NO_PROXY=localhost,127.0.0.1$($C.Reset)"
+    Write-Host "Add extra environment variables as KEY=value. Press Enter on an empty line when done." -ForegroundColor DarkGray
+    Write-Host "Examples: HTTP_PROXY=http://127.0.0.1:7890, NO_PROXY=localhost,127.0.0.1" -ForegroundColor DarkGray
     while ($true) {
-        Write-Host -NoNewline "$($C.Cyan)?$($C.Reset) env var: "
+        Write-Host -NoNewline "? " -ForegroundColor Cyan
+        Write-Host -NoNewline "env var: " -ForegroundColor White
         $line = Read-Host
         if ([string]::IsNullOrWhiteSpace($line)) {
             break
@@ -194,7 +226,7 @@ function Read-EnvVars {
 function Run-ConfigWizard {
     param($Current)
     Write-Rule "Configuration wizard"
-    Write-Host "$($C.Dim)Press Enter to keep the value shown in brackets.$($C.Reset)"
+    Write-Host "Press Enter to keep the value shown in brackets." -ForegroundColor DarkGray
     Write-Host ""
 
     $Current.user_name = Read-ConfigValue "Your name" $Current.user_name
@@ -358,13 +390,39 @@ function Ensure-CondaEnv {
     if (-not (Test-Path $EnvFile)) {
         throw "Missing environment file: $EnvFile"
     }
-    Step "Creating conda environment from environment.yml"
-    & $Conda env create -n $Name -f $EnvFile
+    Step "Creating conda environment from environment.yml (this may take several minutes)..."
+    Write-Host "$($C.Dim)Installing conda packages and dependencies...$($C.Reset)"
+    & $Conda env create -n $Name -f $EnvFile --verbose 2>&1 | ForEach-Object {
+        if ($_ -match "Solving|Collecting|Installing|Preparing|Linking") {
+            Write-Host "  $($C.Dim)$_$($C.Reset)"
+        }
+    }
     if ($LASTEXITCODE -ne 0) {
         Fail "Conda environment creation failed"
         throw "Conda environment creation failed"
     }
     Ok "Environment '$Name' created"
+    
+    Step "Installing/upgrading pip dependencies from requirements.txt"
+    Write-Host "$($C.Dim)This ensures all packages are up to date...$($C.Reset)"
+    $reqFile = Join-Path $Root "requirements.txt"
+    if (Test-Path $reqFile) {
+        & $Conda run -n $Name pip install --upgrade pip setuptools wheel 2>&1 | ForEach-Object {
+            if ($_ -match "Successfully|Installing|Requirement") {
+                Write-Host "  $($C.Dim)$_$($C.Reset)"
+            }
+        }
+        & $Conda run -n $Name pip install -r $reqFile 2>&1 | ForEach-Object {
+            if ($_ -match "Successfully|Installing|Collecting|Requirement") {
+                Write-Host "  $($C.Dim)$_$($C.Reset)"
+            }
+        }
+        if ($LASTEXITCODE -ne 0) {
+            Warn "Some pip packages may have failed to install, but continuing anyway..."
+        } else {
+            Ok "All pip dependencies installed successfully"
+        }
+    }
 }
 
 function Get-OllamaModels {
@@ -468,18 +526,18 @@ function Start-ServiceIfNeeded {
 function Write-ConfigSummary {
     param($ConfigData)
     Write-Rule "Active configuration"
-    Write-Host "$($C.Green)User       $($C.Reset) $($ConfigData.user_name)"
-    Write-Host "$($C.Green)Workspace  $($C.Reset) $($ConfigData.workspace_name)"
-    Write-Host "$($C.Green)Conda env  $($C.Reset) $($ConfigData.conda_env_name)"
-    Write-Host "$($C.Green)Backend    $($C.Reset) http://localhost:$($ConfigData.backend_port)"
-    Write-Host "$($C.Green)Frontend   $($C.Reset) http://localhost:$($ConfigData.frontend_port)"
-    Write-Host "$($C.Green)Ollama     $($C.Reset) $($ConfigData.ollama_base_url)"
-    Write-Host "$($C.Green)Postgres   $($C.Reset) $($ConfigData.postgres_host):$($ConfigData.postgres_port)/$($ConfigData.postgres_db)"
-    Write-Host "$($C.Green)Qdrant     $($C.Reset) $($ConfigData.qdrant_url)"
-    Write-Host "$($C.Green)Redis      $($C.Reset) $($ConfigData.redis_url)"
-    Write-Host "$($C.Green)Storage    $($C.Reset) $($ConfigData.app_storage_dir)"
-    Write-Host "$($C.Green)Models     $($C.Reset) embed=$($ConfigData.models.embedding), write=$($ConfigData.models.writing)"
-    Write-Host "$($C.Gray)Config file $($C.Reset) $ConfigPath"
+    Write-Host "User       $($ConfigData.user_name)" -ForegroundColor Green
+    Write-Host "Workspace  $($ConfigData.workspace_name)" -ForegroundColor Green
+    Write-Host "Conda env  $($ConfigData.conda_env_name)" -ForegroundColor Green
+    Write-Host "Backend    http://localhost:$($ConfigData.backend_port)" -ForegroundColor Green
+    Write-Host "Frontend   http://localhost:$($ConfigData.frontend_port)" -ForegroundColor Green
+    Write-Host "Ollama     $($ConfigData.ollama_base_url)" -ForegroundColor Green
+    Write-Host "Postgres   $($ConfigData.postgres_host):$($ConfigData.postgres_port)/$($ConfigData.postgres_db)" -ForegroundColor Green
+    Write-Host "Qdrant     $($ConfigData.qdrant_url)" -ForegroundColor Green
+    Write-Host "Redis      $($ConfigData.redis_url)" -ForegroundColor Green
+    Write-Host "Storage    $($ConfigData.app_storage_dir)" -ForegroundColor Green
+    Write-Host "Models     embed=$($ConfigData.models.embedding), write=$($ConfigData.models.writing)" -ForegroundColor Green
+    Write-Host "Config file $ConfigPath" -ForegroundColor Gray
     Write-Host ""
 }
 
@@ -488,8 +546,6 @@ try {
 
     $configData = Load-Config
     if ($EnvName) { $configData.conda_env_name = $EnvName }
-    if ($PSBoundParameters.ContainsKey("BackendPort")) { $configData.backend_port = $BackendPort }
-    if ($PSBoundParameters.ContainsKey("FrontendPort")) { $configData.frontend_port = $FrontendPort }
     if ($NoBrowser) { $configData.open_browser = $false }
     if ($SkipModelPull) { $configData.skip_model_pull = $true }
 
@@ -562,11 +618,11 @@ try {
         -EnvVars $frontendEnv
 
     Write-Rule "Ready"
-    Write-Host "$($C.Green)Backend $($C.Reset)  http://localhost:$($configData.backend_port)"
-    Write-Host "$($C.Green)Frontend$($C.Reset)  http://localhost:$($configData.frontend_port)"
-    Write-Host "$($C.Gray)Logs    $($C.Reset)  $logDir"
+    Write-Host "Backend   http://localhost:$($configData.backend_port)" -ForegroundColor Green
+    Write-Host "Frontend  http://localhost:$($configData.frontend_port)" -ForegroundColor Green
+    Write-Host "Logs      $logDir" -ForegroundColor Gray
     Write-Host ""
-    Write-Host "$($C.Dim)Run .\launch.ps1 -Config to change setup. Use -ConfigOnly to save without launching.$($C.Reset)"
+    Write-Host "Run .\launch.ps1 -Config to change setup. Use -ConfigOnly to save without launching." -ForegroundColor DarkGray
     Write-Host ""
 
     if ($configData.open_browser) {
@@ -576,7 +632,7 @@ try {
     Write-Rule "Launch failed"
     Fail $_.Exception.Message
     Write-Host ""
-    Write-Host "$($C.Yellow)Useful checks:$($C.Reset)"
+    Write-Host "Useful checks:" -ForegroundColor Yellow
     Write-Host "  conda env list"
     Write-Host "  ollama list"
     Write-Host "  Get-Content '$ConfigPath'"

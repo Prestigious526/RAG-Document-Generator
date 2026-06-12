@@ -2,8 +2,8 @@ import hashlib
 import math
 import re
 
+import httpx
 import numpy as np
-import requests
 
 
 TOKEN_RE = re.compile(r"[a-zA-Z0-9_]+")
@@ -15,20 +15,20 @@ class EmbeddingClient:
         self.model = model
         self.use_ollama = use_ollama
         self.dimensions = dimensions
+        self.client = httpx.Client(timeout=60)
 
     def embed(self, text: str) -> list[float]:
         if self.use_ollama:
             try:
-                response = requests.post(
+                response = self.client.post(
                     f"{self.base_url}/api/embeddings",
                     json={"model": self.model, "prompt": text},
-                    timeout=60,
                 )
                 response.raise_for_status()
                 vector = response.json().get("embedding")
                 if vector:
                     return vector
-            except requests.RequestException:
+            except httpx.RequestError:
                 pass
         return self._hash_embedding(text)
 

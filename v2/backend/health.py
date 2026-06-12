@@ -1,7 +1,7 @@
 import socket
 import time
 
-import requests
+import httpx
 
 from backend.config.settings import get_settings
 
@@ -9,14 +9,15 @@ from backend.config.settings import get_settings
 def _http_health(name: str, url: str, timeout: int = 3) -> dict:
     started = time.perf_counter()
     try:
-        response = requests.get(url, timeout=timeout)
+        with httpx.Client(timeout=timeout) as client:
+            response = client.get(url)
         return {
             "name": name,
-            "status": "ok" if response.ok else "error",
+            "status": "ok" if response.is_success else "error",
             "latency_ms": round((time.perf_counter() - started) * 1000, 1),
             "detail": response.status_code,
         }
-    except requests.RequestException as exc:
+    except httpx.RequestError as exc:
         return {
             "name": name,
             "status": "error",
