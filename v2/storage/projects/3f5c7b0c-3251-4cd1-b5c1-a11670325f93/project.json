@@ -10,7 +10,159 @@
       "parsed_path": "storage\\projects\\3f5c7b0c-3251-4cd1-b5c1-a11670325f93\\parsed\\717a9b8e-bb98-494a-9394-e5c997c5ef3b.json",
       "chunks": 25,
       "version": 1
+    },
+    {
+      "id": "7975829a-5fa3-4397-9230-9ab258a2a5ad",
+      "filename": "Part-I,Vol-I.docx",
+      "sha256": "12787108f4e6914ea4974cfea1247c6eab82d18fad805437dcdfa1fedd990d0b",
+      "path": "storage\\projects\\3f5c7b0c-3251-4cd1-b5c1-a11670325f93\\raw\\7975829a-5fa3-4397-9230-9ab258a2a5ad.docx",
+      "parsed_path": "storage\\projects\\3f5c7b0c-3251-4cd1-b5c1-a11670325f93\\parsed\\7975829a-5fa3-4397-9230-9ab258a2a5ad.json",
+      "chunks": 53,
+      "version": 1
+    },
+    {
+      "id": "50990237-3d96-4ea2-ad69-bfd49999924f",
+      "filename": "Fault Diagnosis.docx",
+      "sha256": "fe308be79fa72cce9cb60ea1143231ebc4c92593d9d5a5b713796020106aa53c",
+      "path": "storage\\projects\\3f5c7b0c-3251-4cd1-b5c1-a11670325f93\\raw\\50990237-3d96-4ea2-ad69-bfd49999924f.docx",
+      "parsed_path": "storage\\projects\\3f5c7b0c-3251-4cd1-b5c1-a11670325f93\\parsed\\50990237-3d96-4ea2-ad69-bfd49999924f.json",
+      "chunks": 2,
+      "version": 1
     }
   ],
-  "templates": []
+  "templates": [
+    {
+      "id": "ea237bbc-e0c7-4ab9-9ba4-88636ca40b30",
+      "filename": "example03.docx",
+      "path": "storage\\projects\\3f5c7b0c-3251-4cd1-b5c1-a11670325f93\\templates\\ea237bbc-e0c7-4ab9-9ba4-88636ca40b30.docx",
+      "profile": {
+        "styles": [
+          {
+            "name": "Normal",
+            "font": "Arial",
+            "bold": null,
+            "italic": null
+          },
+          {
+            "name": "Heading 1",
+            "font": null,
+            "bold": true,
+            "italic": null
+          },
+          {
+            "name": "Heading 2",
+            "font": null,
+            "bold": true,
+            "italic": null
+          },
+          {
+            "name": "Heading 3",
+            "font": null,
+            "bold": true,
+            "italic": null
+          },
+          {
+            "name": "Default Paragraph Font",
+            "font": null,
+            "bold": null,
+            "italic": null
+          },
+          {
+            "name": "Normal Table",
+            "font": null,
+            "bold": null,
+            "italic": null
+          },
+          {
+            "name": "No List",
+            "font": null,
+            "bold": null,
+            "italic": null
+          },
+          {
+            "name": "Strong",
+            "font": null,
+            "bold": true,
+            "italic": null
+          },
+          {
+            "name": "Table Grid",
+            "font": null,
+            "bold": null,
+            "italic": null
+          },
+          {
+            "name": "Style Heading 2 + Not Italic Before:  0 pt After:  0 pt Line spa...",
+            "font": null,
+            "bold": null,
+            "italic": true
+          },
+          {
+            "name": "Style Heading 2 + Not Italic",
+            "font": null,
+            "bold": null,
+            "italic": true
+          },
+          {
+            "name": "Header",
+            "font": null,
+            "bold": null,
+            "italic": null
+          },
+          {
+            "name": "Header Char",
+            "font": "Arial",
+            "bold": null,
+            "italic": null
+          },
+          {
+            "name": "Footer",
+            "font": null,
+            "bold": null,
+            "italic": null
+          },
+          {
+            "name": "Footer Char",
+            "font": "Arial",
+            "bold": null,
+            "italic": null
+          }
+        ],
+        "placeholders": [],
+        "sections": [
+          {
+            "page_width": 12240,
+            "page_height": 15840,
+            "top_margin": 1440,
+            "bottom_margin": 1440,
+            "left_margin": 1134,
+            "right_margin": 1325,
+            "header": "",
+            "footer": ""
+          }
+        ],
+        "heading_levels": [
+          {
+            "style": "Heading 1",
+            "level": "1"
+          },
+          {
+            "style": "Heading 2",
+            "level": "2"
+          },
+          {
+            "style": "Heading 3",
+            "level": "3"
+          }
+        ],
+        "numbering_styles": [
+          "No List"
+        ],
+        "table_styles": [
+          "Normal Table",
+          "Table Grid"
+        ]
+      }
+    }
+  ]
 }
