@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class BackupManager:
     """Manage project backups and archival."""
 
-    def __init__(self, storage_root: Path = Path("storage")):
+    def __init__(self, storage_root: Path = Path("documents") / "storage"):
         """Initialize backup manager."""
         self.storage_root = storage_root
         self.backup_dir = storage_root / "backups"
@@ -129,7 +129,7 @@ class BackupManager:
 class CleanupManager:
     """Manage cleanup and archival of old data."""
 
-    def __init__(self, storage_root: Path = Path("storage")):
+    def __init__(self, storage_root: Path = Path("documents") / "storage"):
         """Initialize cleanup manager."""
         self.storage_root = storage_root
 

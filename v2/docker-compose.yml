@@ -41,7 +41,7 @@ services:
       - "8000:8000"
     environment:
       OLLAMA_BASE_URL: http://ollama:11434
-      APP_STORAGE_DIR: /app/storage
+      APP_STORAGE_DIR: /app/documents/storage
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: rag_platform
@@ -50,10 +50,10 @@ services:
       QDRANT_URL: http://qdrant:6333
       REDIS_URL: redis://redis:6379/0
     volumes:
-      - uploaded_docs:/app/storage/projects
-      - generated_docs:/app/storage/generated_docs
-      - logs:/app/storage/logs
-      - ./storage:/app/storage/cache_host
+      - uploaded_docs:/app/documents/storage/projects
+      - generated_docs:/app/documents/storage/generated_docs
+      - logs:/app/documents/storage/logs
+      - ./documents/storage:/app/documents/storage/cache_host
     depends_on:
       - ollama
       - postgres
@@ -69,9 +69,9 @@ services:
     environment:
       BACKEND_URL: http://fastapi:8000
     volumes:
-      - uploaded_docs:/app/storage/projects
-      - generated_docs:/app/storage/generated_docs
-      - logs:/app/storage/logs
+      - uploaded_docs:/app/documents/storage/projects
+      - generated_docs:/app/documents/storage/generated_docs
+      - logs:/app/documents/storage/logs
     depends_on:
       - fastapi
 
@@ -82,7 +82,7 @@ services:
     command: celery -A workers.celery_app worker --loglevel=INFO
     environment:
       OLLAMA_BASE_URL: http://ollama:11434
-      APP_STORAGE_DIR: /app/storage
+      APP_STORAGE_DIR: /app/documents/storage
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: rag_platform
@@ -91,9 +91,9 @@ services:
       QDRANT_URL: http://qdrant:6333
       REDIS_URL: redis://redis:6379/0
     volumes:
-      - uploaded_docs:/app/storage/projects
-      - generated_docs:/app/storage/generated_docs
-      - logs:/app/storage/logs
+      - uploaded_docs:/app/documents/storage/projects
+      - generated_docs:/app/documents/storage/generated_docs
+      - logs:/app/documents/storage/logs
     depends_on:
       - fastapi
       - redis

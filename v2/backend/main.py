@@ -13,7 +13,7 @@ from backend.health import deep_health
 
 def _setup_logging() -> None:
     """Configure logging to write to file and stdout."""
-    log_dir = Path(os.getenv("APP_STORAGE_DIR", "storage")) / "logs"
+    log_dir = Path(os.getenv("APP_STORAGE_DIR", "documents/storage")) / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
     log_file = log_dir / "app.log"
 

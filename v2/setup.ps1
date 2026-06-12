@@ -208,7 +208,7 @@ function Verify-ProjectStructure {
     $requiredDirs = @(
         "backend",
         "frontend",
-        "storage",
+        "documents",
         "scripts",
         "tests"
     )

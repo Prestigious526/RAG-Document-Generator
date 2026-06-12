@@ -26,7 +26,7 @@ _RUNTIME_SETTINGS_PATH = _CONFIG_DIR / "app_settings.json"
 
 
 class Settings(BaseSettings):
-    app_storage_dir: Path = Path("storage")
+    app_storage_dir: Path = Path("documents") / "storage"
     ollama_base_url: str = "http://localhost:11434"
     ollama_planning_model: str = "qwen3:14b"
     ollama_writing_model: str = "qwen3:14b"

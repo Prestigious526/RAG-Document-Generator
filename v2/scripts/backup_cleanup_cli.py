@@ -24,7 +24,7 @@ def backup():
 @backup.command()
 @click.argument("project_id")
 @click.option("--include-vectors", is_flag=True, help="Include vector data in backup")
-@click.option("--storage", default="storage", help="Storage root directory")
+@click.option("--storage", default="documents/storage", help="Storage root directory")
 def create(project_id: str, include_vectors: bool, storage: str):
     """Create a backup of a project."""
     manager = BackupManager(storage_root=Path(storage))
@@ -39,7 +39,7 @@ def create(project_id: str, include_vectors: bool, storage: str):
 @backup.command()
 @click.argument("project_id")
 @click.argument("backup_path")
-@click.option("--storage", default="storage", help="Storage root directory")
+@click.option("--storage", default="documents/storage", help="Storage root directory")
 def restore(project_id: str, backup_path: str, storage: str):
     """Restore a project from backup."""
     manager = BackupManager(storage_root=Path(storage))
@@ -53,7 +53,7 @@ def restore(project_id: str, backup_path: str, storage: str):
 
 @backup.command()
 @click.option("--project", help="Filter by project ID")
-@click.option("--storage", default="storage", help="Storage root directory")
+@click.option("--storage", default="documents/storage", help="Storage root directory")
 def list_backups(project: str, storage: str):
     """List available backups."""
     manager = BackupManager(storage_root=Path(storage))
@@ -88,7 +88,7 @@ def cleanup():
 @click.argument("project_id")
 @click.option("--days", default=30, help="Delete runs older than N days")
 @click.option("--dry-run", is_flag=True, help="Preview what would be deleted")
-@click.option("--storage", default="storage", help="Storage root directory")
+@click.option("--storage", default="documents/storage", help="Storage root directory")
 def old_runs(project_id: str, days: int, dry_run: bool, storage: str):
     """Clean up old generation runs."""
     manager = CleanupManager(storage_root=Path(storage))
@@ -108,7 +108,7 @@ def old_runs(project_id: str, days: int, dry_run: bool, storage: str):
 
 @cleanup.command()
 @click.option("--dry-run", is_flag=True, help="Preview what would be deleted")
-@click.option("--storage", default="storage", help="Storage root directory")
+@click.option("--storage", default="documents/storage", help="Storage root directory")
 def cache(dry_run: bool, storage: str):
     """Clean up cache directory."""
     manager = CleanupManager(storage_root=Path(storage))
@@ -124,7 +124,7 @@ def cache(dry_run: bool, storage: str):
 
 @cleanup.command()
 @click.option("--dry-run", is_flag=True, help="Preview what would be deleted")
-@click.option("--storage", default="storage", help="Storage root directory")
+@click.option("--storage", default="documents/storage", help="Storage root directory")
 def orphaned_vectors(dry_run: bool, storage: str):
     """Clean up orphaned vector files."""
     manager = CleanupManager(storage_root=Path(storage))
@@ -141,7 +141,7 @@ def orphaned_vectors(dry_run: bool, storage: str):
 @cleanup.command()
 @click.argument("project_id")
 @click.option("--backup-first", is_flag=True, default=True, help="Create backup before archiving")
-@click.option("--storage", default="storage", help="Storage root directory")
+@click.option("--storage", default="documents/storage", help="Storage root directory")
 def archive(project_id: str, backup_first: bool, storage: str):
     """Archive a project."""
     manager = CleanupManager(storage_root=Path(storage))
@@ -154,7 +154,7 @@ def archive(project_id: str, backup_first: bool, storage: str):
 
 
 @cleanup.command()
-@click.option("--storage", default="storage", help="Storage root directory")
+@click.option("--storage", default="documents/storage", help="Storage root directory")
 def stats(storage: str):
     """Show storage usage statistics."""
     manager = CleanupManager(storage_root=Path(storage))

@@ -1,4 +1,4 @@
-param(
+﻿param(
     [switch]$Help,
     [switch]$Interactive,
     [switch]$Config,           # alias for -Interactive

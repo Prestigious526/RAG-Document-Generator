@@ -640,7 +640,7 @@ def _render_general_settings() -> None:
 
         st.markdown('<div class="settings-section-header">Storage & Services</div>', unsafe_allow_html=True)
         col6, col7 = st.columns(2)
-        app_storage_dir = col6.text_input("Storage directory", value=cfg.get("app_storage_dir", "storage"))
+        app_storage_dir = col6.text_input("Storage directory", value=cfg.get("app_storage_dir", "documents/storage"))
         redis_url = col7.text_input("Redis URL", value=cfg.get("redis_url", "redis://localhost:6379/0"))
         qdrant_url = col6.text_input("Qdrant URL", value=cfg.get("qdrant_url", "http://localhost:6333"))
         postgres_host = col7.text_input("PostgreSQL host", value=cfg.get("postgres_host", "localhost"))
